@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package robotrpc;
+
+import "google/api/annotations.proto";
+
+message RobotQuery {
+  string robot_type = 1;
+}
+
+message RobotQueryResult {
+  repeated string robots = 1;
+}
+
+message RobotLeaseRequest {
+  string robot_name_id = 1;
+}
+
+message RobotLeaseGrant {
+  string lease_id = 1;
+}
+
+service RobotAllocation {
+  rpc ListRobots(RobotQuery) returns (RobotQueryResult) {
+    option (google.api.http) = {
+      get: "/api/v1/robots"
+    };
+  }
+
+  // The name of the request field whose value is mapped to the HTTP request
+  // body, or `*` for mapping all request fields not captured by the path
+  // pattern to the HTTP body, or omitted for not having any HTTP request body.
+
+  rpc LeaseRobot(RobotLeaseRequest) returns (RobotLeaseGrant) {
+    option (google.api.http) = {
+      post: "/api/v1/robots/leases"
+      body: "*"
+    };
+  }
+}
